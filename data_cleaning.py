@@ -7,6 +7,8 @@ class DataCleaning:
 
     def clean_user_data(self, df):
         df = df.replace('NULL', None)
-        df = df.dropna(how = 'any', axis = 0)
         df['join_date'] = pd.to_datetime(df['join_date'], format = 'mixed', yearfirst = True, errors='coerce')
+        df = df.dropna(how = 'any', axis = 0)
         return df
+    
+    

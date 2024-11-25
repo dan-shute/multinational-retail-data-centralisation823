@@ -17,3 +17,6 @@ class DatabaseConnector:
         creds = self.read_db_creds()
         engine = create_engine("postgresql://{RDS_USER}:{RDS_PASSWORD}@{RDS_HOST}:{RDS_PORT}/{RDS_DATABASE}".format(**creds), echo = True)
         return engine
+    
+    def upload_to_db(self, df, table_name):
+        pass
