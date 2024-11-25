@@ -1,6 +1,7 @@
 # This script will contain the methods for extracting the data from various sources such as CSV files, an API and an S3 Bucket.
 from sqlalchemy import inspect as insp
 import pandas as pd
+import tabula
 
 
 
@@ -18,6 +19,7 @@ class DataExtractor:
         df = pd.read_sql(query, engine)
         return df
 
-
-
-    
+    def retrieve_pdf_data(self, url):
+        raw_df_list = tabula.read_pdf(url)
+        df = pd.concat(raw_df_list)
+        return df
