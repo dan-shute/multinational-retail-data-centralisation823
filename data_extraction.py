@@ -20,6 +20,6 @@ class DataExtractor:
         return df
 
     def retrieve_pdf_data(self, url):
-        raw_df_list = tabula.read_pdf(url)
+        raw_df_list = tabula.read_pdf(url, pages= 'all')
         df = pd.concat(raw_df_list)
         return df
