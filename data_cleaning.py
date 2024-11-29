@@ -20,5 +20,13 @@ class DataCleaning:
         df = df.dropna(how = 'any', axis = 0)
         return df
         
+    def clean_store_data(self, df):
+        df = df.replace('NULL', None)
+        df = df.drop(columns = ['lat'], axis=1)
+        df['opening_date'] = pd.to_datetime(df['opening_date'], format = 'mixed', yearfirst = True, errors='coerce')
+        df['address'] = df['address'].str.replace('\n', ' ')
+        df['staff_numbers'] = df['staff_numbers'].astype(str).str.extract(r'(\d+\.*\d*)')
+        df = df.dropna(how='any', axis = 0)
+        return df
     
     
