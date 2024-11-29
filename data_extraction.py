@@ -2,6 +2,7 @@
 from sqlalchemy import inspect as insp
 import pandas as pd
 import tabula
+import requests
 
 
 
@@ -22,4 +23,21 @@ class DataExtractor:
     def retrieve_pdf_data(self, url):
         raw_df_list = tabula.read_pdf(url, pages= 'all')
         df = pd.concat(raw_df_list)
+        return df
+    
+    def api_key(self):
+        return {'x-api-key':'yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX'}
+    
+    def list_number_of_stores(self, headers, endpoint='https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores'):
+        response = requests.get(endpoint, headers=headers)
+        return response.json()['number_stores']
+    
+    def retrieve_stores_data(self, endpoint='https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/'):
+        df = pd.DataFrame()
+        number_of_stores = self.list_number_of_stores(headers=self.api_key())
+
+        for i in range(number_of_stores):
+            url = endpoint + f'{i}'
+            response = requests.get(url, headers=self.api_key())
+            df = pd.concat([df, pd.DataFrame(pd.json_normalize(response.json()))])
         return df
