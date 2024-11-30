@@ -1,5 +1,6 @@
 # This script will contain a class DataCleaning with methods to clean data from each of the sources
 import pandas as pd
+import numpy as np
 
 class DataCleaning:
     def __init__(self):
@@ -29,4 +30,26 @@ class DataCleaning:
         df = df.dropna(how='any', axis = 0)
         return df
     
+    def convert_product_weights(self, df):
+        df['weight'] = df['weight'].apply(self.kg_convert)
+        return df
+
+    def kg_convert(self, weight):
+        if isinstance(weight, float):
+            return weight
+        elif 'x' in weight:
+            factor = int(weight.split('x')[0])
+            multiplicand = float(weight.split('x')[1].replace('g',''))
+            return (factor * multiplicand) / 1000
+        elif weight.endswith('.'):
+            return float(weight.split(' ')[0].replace('g', ''))
+        elif 'ml' in weight:
+            return float(weight.replace('ml', '')) / 1000
+        elif 'kg' in weight:
+            return float(weight.replace('kg', ''))
+        elif 'g' in weight:
+            return float(weight.replace('g', '')) / 1000
+        else:
+            return np.nan
+
     
