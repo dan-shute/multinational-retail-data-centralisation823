@@ -3,6 +3,7 @@ from sqlalchemy import inspect as insp
 import pandas as pd
 import tabula
 import requests
+import boto3
 
 
 
@@ -41,3 +42,15 @@ class DataExtractor:
             response = requests.get(url, headers=self.api_key())
             df = pd.concat([df, pd.DataFrame(pd.json_normalize(response.json()))])
         return df
+
+    def extract_from_s3(self, address):
+        split_address = address.split('/')
+        bucket = split_address[2]
+        file_name = split_address[3]
+        s3 = boto3.client('s3')
+        obj = s3.get_object(Bucket = bucket, Key = file_name)
+        df = pd.read_csv(obj['Body'])
+        return df
+        
+        
+        
