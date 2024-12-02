@@ -54,4 +54,9 @@ class DataCleaning:
         else:
             return np.nan
 
+    def clean_products_data(self, df):
+        df = df.replace('NULL', None)
+        df['weight'] = df['weight'].apply(self.kg_convert)
+        df = df.dropna(how = 'any', axis = 0)
+        return df
     
