@@ -1,12 +1,14 @@
 # This script will contain the class DatabaseConnector.
 # It will be used to connect with and upload to the database
-
 import yaml
 import pandas as pd
 import psycopg2
 from sqlalchemy import create_engine
 
 class DatabaseConnector:
+
+    def __init__(self):
+        pass
     
     def read_db_creds(self):
         with open('db_creds.yaml', 'r') as f:

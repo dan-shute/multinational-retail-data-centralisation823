@@ -5,8 +5,6 @@ import tabula
 import requests
 import boto3
 
-
-
 class DataExtractor:
     def __init__(self):
         pass
@@ -52,5 +50,7 @@ class DataExtractor:
         df = pd.read_csv(obj['Body'])
         return df
         
-        
+    def retrieve_events_data(self, address):
+        df = pd.read_json(address)
+        return df
         

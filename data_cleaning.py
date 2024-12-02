@@ -14,7 +14,7 @@ class DataCleaning:
     
     def clean_card_data(self, df):
         df = df.replace('NULL', None)
-        df['card_number'] = df['card_number'].astype(str).str.extract(r'(\d+\.*\d*)')
+        df['card_number'] = df['card_number'].astype(str).str.extract(r'(\d+\.*\d*)') # Use regex to remove all non-numeric characters.
         df = df.drop_duplicates(subset= 'card_number', keep= 'last')
         df = df[pd.to_numeric(df['card_number'], errors= 'coerce').notnull()]
         df['date_payment_confirmed'] = pd.to_datetime(df['date_payment_confirmed'], format = 'mixed', yearfirst = True, errors='coerce')
@@ -26,8 +26,8 @@ class DataCleaning:
         df = df.drop(columns = ['lat'], axis=1)
         df['opening_date'] = pd.to_datetime(df['opening_date'], format = 'mixed', yearfirst = True, errors='coerce')
         df['address'] = df['address'].str.replace('\n', ' ')
-        df['staff_numbers'] = df['staff_numbers'].astype(str).str.extract(r'(\d+\.*\d*)')
-        df = df.dropna(subset = df.columns.difference(['latitude']), how='any', axis = 0)
+        df['staff_numbers'] = df['staff_numbers'].astype(str).str.extract(r'(\d+\.*\d*)') # Use regex to remove all non-numeric characters.
+        df = df.dropna(subset = df.columns.difference(['latitude']), how='any', axis = 0) # Drop rows where there is a NULL value, don't look at the 'latitude' column.
         return df
     
     def convert_product_weights(self, df):
@@ -37,7 +37,7 @@ class DataCleaning:
     def kg_convert(self, weight):
         if isinstance(weight, float):
             return weight
-        elif 'x' in weight:
+        elif 'x' in weight:                                            # For values such as '8 x 25g'
             factor = int(weight.split('x')[0])
             multiplicand = float(weight.split('x')[1].replace('g',''))
             return (factor * multiplicand) / 1000
@@ -57,6 +57,16 @@ class DataCleaning:
     def clean_products_data(self, df):
         df = df.replace('NULL', None)
         df['weight'] = df['weight'].apply(self.kg_convert)
+        df = df.dropna(how = 'any', axis = 0)
+        return df
+    
+    def clean_orders_data(self, df):
+        df = df.drop(columns = ['first_name', 'last_name', '1'])
+        return df
+    
+    def clean_events_data(self, df):
+        df['date'] = pd.to_datetime(df[['year','month','day']], errors = 'coerce')
+        df = df.replace('NULL', None)
         df = df.dropna(how = 'any', axis = 0)
         return df
     
