@@ -27,7 +27,7 @@ class DataCleaning:
         df['opening_date'] = pd.to_datetime(df['opening_date'], format = 'mixed', yearfirst = True, errors='coerce')
         df['address'] = df['address'].str.replace('\n', ' ')
         df['staff_numbers'] = df['staff_numbers'].astype(str).str.extract(r'(\d+\.*\d*)')
-        df = df.dropna(how='any', axis = 0)
+        df = df.dropna(subset = df.columns.difference(['latitude']), how='any', axis = 0)
         return df
     
     def convert_product_weights(self, df):
@@ -49,6 +49,8 @@ class DataCleaning:
             return float(weight.replace('kg', ''))
         elif 'g' in weight:
             return float(weight.replace('g', '')) / 1000
+        elif 'oz' in weight:
+            return round(float(weight.replace('oz', '')) / 35.274, 2)
         else:
             return np.nan
 
