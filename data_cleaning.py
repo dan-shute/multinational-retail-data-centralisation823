@@ -14,7 +14,7 @@ class DataCleaning:
     
     def clean_card_data(self, df):
         df = df.replace('NULL', None)
-        df['card_number'] = df['card_number'].astype(str).str.extract(r'(\d+\.*\d*)') # Use regex to remove all non-numeric characters.
+        df['card_number'] = df['card_number'].astype(str).str.replace(r'\D', '', regex = True) # Use regex to remove all non-numeric characters.
         df = df.drop_duplicates(subset= 'card_number', keep= 'last')
         df = df[pd.to_numeric(df['card_number'], errors= 'coerce').notnull()]
         df['date_payment_confirmed'] = pd.to_datetime(df['date_payment_confirmed'], format = 'mixed', yearfirst = True, errors='coerce')
