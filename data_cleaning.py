@@ -23,11 +23,10 @@ class DataCleaning:
         
     def clean_store_data(self, df):
         df = df.replace('NULL', None)
-        df = df.drop(columns = ['lat'], axis=1)
         df['opening_date'] = pd.to_datetime(df['opening_date'], format = 'mixed', yearfirst = True, errors='coerce')
         df['address'] = df['address'].str.replace('\n', ' ')
-        df['staff_numbers'] = df['staff_numbers'].astype(str).str.extract(r'(\d+\.*\d*)') # Use regex to remove all non-numeric characters.
-        df = df.dropna(subset = df.columns.difference(['latitude']), how='any', axis = 0) # Drop rows where there is a NULL value, don't look at the 'latitude' column.
+        df['staff_numbers'] = df['staff_numbers'].astype(str).str.replace(r'\D', '', regex = True) # Use regex to remove all non-numeric characters.
+        df = df.dropna(subset = df.columns.difference(['latitude', 'lat']), how='any', axis = 0) # Drop rows where there is a NULL value, don't look at the 'latitude' column.
         return df
     
     def convert_product_weights(self, df):
